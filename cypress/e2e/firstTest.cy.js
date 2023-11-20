@@ -2,7 +2,6 @@
 
 describe ('Onliner test', () => {
     beforeEach(() => {
-        cy.viewport(1920, 1080);
         cy.visit('https://www.onliner.by/');
     })
     
@@ -22,9 +21,24 @@ describe ('Onliner test', () => {
     it.only('Search', () => {
         cy.get('.fast-search__input').as('searchField');
         cy.get('@searchField').type('iPhone');
-        cy.pause();
-        cy.get('.search__close').click();
-        cy.pause();
+        cy.get('.modal-iframe')
+          .its('0.contentDocument')
+          .its('body')
+          .find('.text_match')
+          .should('have.text', 'iPhone');
+    })
 
+    it.only('Close the search iFrame', () => {
+        cy.get('.fast-search__input')
+          .as('searchField');
+        cy.get('@searchField')
+          .type('iPhone');
+        cy.get('.modal-iframe')
+          .its('0.contentDocument')
+          .its('body')
+          .find('.search__close')
+          .click()
+        cy.get('.modal-iframe')
+          .should('not.be.visible');
     })
 })
