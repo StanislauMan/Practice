@@ -1,5 +1,7 @@
 ///<reference types='cypress' />
 
+import homePage from "../fixtures/pom_fixtures/homePage.json"
+
 describe ('Onliner test', () => {
     beforeEach(() => {
         cy.visit('https://www.onliner.by/');
@@ -18,7 +20,7 @@ describe ('Onliner test', () => {
         cy.get('.footer-style__logo').should('be.visible');
     })
 
-    it.only('Search', () => {
+    it('Search', () => {
         cy.get('.fast-search__input').as('searchField');
         cy.get('@searchField').type('iPhone');
         cy.get('.modal-iframe')
@@ -28,7 +30,7 @@ describe ('Onliner test', () => {
           .should('have.text', 'iPhone');
     })
 
-    it.only('Close the search iFrame', () => {
+    it('Close the search iFrame', () => {
         cy.get('.fast-search__input')
           .as('searchField');
         cy.get('@searchField')
@@ -40,5 +42,14 @@ describe ('Onliner test', () => {
           .click()
         cy.get('.modal-iframe')
           .should('not.be.visible');
+    })
+
+    it.only('Head menu check', () => {
+      cy.get('.b-main-navigation').then(($els) => {
+        const menuOptions = Cypress._.map(Cypress.$.makeArray($els), 'innerText').join('').split('\n');
+        console.log(menuOptions);
+        console.log(homePage.headMenuItems);
+        expect(menuOptions).to.eql(homePage.headMenuItems);
+      }) 
     })
 })
